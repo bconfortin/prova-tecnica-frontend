@@ -52,11 +52,11 @@ function fetchRepositoryDetails(username = '', repositoryName = '') {
         }
     })
     .then((response) => response.json())
-    .then((data) => console.log(data))
+    .then((detalhesDoRepositorio) => montaDetalhesDoRepositorio(detalhesDoRepositorio))
     .catch((error) => defaultConsoleLogError(`Houve um erro ao tentar buscar as informações do usuário ${repositoryName}. Detalhes: ${error}.`));
 }
 
-if ($("#buscarUsuario")) {
+if ($("#buscarUsuario").length) {
     $("#buscarUsuario").on("click", () => {
         let username = $("#username").val();
         fetchUser(username);
@@ -65,7 +65,7 @@ if ($("#buscarUsuario")) {
 }
 
 function montaDadosDoUsuario (dadosDoUsuario) {
-    if ($("#divDadosDoUsuario")) {
+    if ($("#divDadosDoUsuario").length) {
         $("#divDadosDoUsuario").empty();
         let html = '';
         html += `
@@ -83,7 +83,7 @@ function montaDadosDoUsuario (dadosDoUsuario) {
 }
 
 function montaListaDeRepositorios (listaDeRepositorios) {
-    if ($("#divListaDeRepositorios") && $("#divTBodyListaDeRepositorios")) {
+    if ($("#divListaDeRepositorios").length && $("#divTBodyListaDeRepositorios").length) {
         const MAKE_INDEX_START_AT_1 = 1
         $("#divTBodyListaDeRepositorios").empty();
         let html = ''
@@ -93,7 +93,7 @@ function montaListaDeRepositorios (listaDeRepositorios) {
                     <th>${index + MAKE_INDEX_START_AT_1}</th>
                     <td>${repositorio.full_name}</td>
                     <td>${repositorio.stargazers_count}</td>
-                    <td><a href="/detalhes-do-repositorio.html?username=${repositorio.owner.login}&repository=${repositorio.name}" class="btn btn-success text-uppercase font-700">Acessar</a></td>
+                    <td><a href="detalhes-do-repositorio.html?username=${repositorio.owner.login}&repository=${repositorio.name}" class="btn btn-success text-uppercase font-700">Acessar</a></td>
                 </tr>
             `
         })
@@ -102,3 +102,50 @@ function montaListaDeRepositorios (listaDeRepositorios) {
     }
 }
 
+/**
+ * @description Solução retirada do StackOverflow para pegar os parâmetos de uma URL
+ * https://stackoverflow.com/questions/19491336/get-url-parameter-jquery-or-how-to-get-query-string-values-in-js
+ * @param sParam
+ * @returns {*}
+ */
+let getUrlParameter = function getUrlParameter(sParam) {
+    let sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+};
+
+if ($("#divDetalhesDoRepositorio").length) {
+    let username = getUrlParameter('username')
+    let repositoryName = getUrlParameter('repository')
+    if (username && repositoryName) {
+        fetchRepositoryDetails(username, repositoryName)
+    } else {
+        defaultConsoleLogError('Não foram passados os nomes do usuário e/ou do repositório.')
+    }
+}
+
+// nome, descrição, ,número de estrelas, linguagem e um link externo para a página do repositório no GitHub
+function montaDetalhesDoRepositorio (detalhesDoRepositorio) {
+    if ($("#divDetalhesDoRepositorio").length) {
+        $("#divDetalhesDoRepositorio").empty();
+        let html = ''
+        html += `
+            <div>Nome: ${detalhesDoRepositorio.name}</div>
+            <div>Descrição: ${detalhesDoRepositorio.description ? detalhesDoRepositorio.description : "Nenhuma descrição informada."}</div>
+            <div>Estrelas: ${detalhesDoRepositorio.stargazers_count}</div>
+            <div>Linguagem: ${detalhesDoRepositorio.language}</div>
+            <div><a href="${detalhesDoRepositorio.html_url}" class="btn btn-success text-uppercase font-700">Acessar repositório</a></div>
+        `
+        $("#divDetalhesDoRepositorio").append(html);
+        $("#divDetalhesDoRepositorio").removeClass("invisible");
+    }
+}
