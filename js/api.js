@@ -113,6 +113,10 @@ if ($("#username").length) {
  * @param dadosDoUsuario
  */
 function montaDadosDoUsuario (dadosDoUsuario) {
+    if (dadosDoUsuario.message && dadosDoUsuario.message.toLowerCase() === 'not found') {
+        return alert("Usuário não encontrado.")
+    }
+
     if ($("#divDadosDoUsuario").length) {
         $("#divDadosDoUsuario").empty();
         let html = '';
@@ -144,6 +148,10 @@ function montaDadosDoUsuario (dadosDoUsuario) {
  * @param listaDeRepositorios
  */
 function montaListaDeRepositorios (listaDeRepositorios) {
+    if (!listaDeRepositorios || listaDeRepositorios.length <= 0) {
+        return alert("Esse usuário não possui nenhum repositório.")
+    }
+
     if ($("#divListaDeRepositorios").length && $("#divTBodyListaDeRepositorios").length) {
         const MAKE_INDEX_START_AT_1 = 1
         $("#divTBodyListaDeRepositorios").empty();
@@ -203,6 +211,10 @@ if ($("#divDetalhesDoRepositorio").length) {
  * @param detalhesDoRepositorio
  */
 function montaDetalhesDoRepositorio (detalhesDoRepositorio) {
+    if (!detalhesDoRepositorio) {
+        return alert("Não foi possível buscar os detalhes desse repositório.")
+    }
+
     if ($("#divDetalhesDoRepositorio").length) {
         $("#divDetalhesDoRepositorio").empty();
         let html = ''
@@ -216,4 +228,20 @@ function montaDetalhesDoRepositorio (detalhesDoRepositorio) {
         $("#divDetalhesDoRepositorio").append(html);
         $("#divDetalhesDoRepositorio").removeClass("invisible");
     }
+}
+
+function sortByStarsDesc(a,b) {
+    if (a.stargazers_count < b.stargazers_count)
+        return -1;
+    if (a.stargazers_count > b.stargazers_count)
+        return 1;
+    return 0;
+}
+
+function sortByStarsAsc(a,b) {
+    if (a.stargazers_count < b.stargazers_count)
+        return 1;
+    if (a.stargazers_count > b.stargazers_count)
+        return -1;
+    return 0;
 }
