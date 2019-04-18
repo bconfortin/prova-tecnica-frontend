@@ -1,0 +1,30 @@
+.card {
+    background: #fff;
+    border-radius: 2px;
+    position: relative;
+    padding: 15px;
+}
+
+.font-700 {
+    font-weight: 700;
+}
+
+.mtop-30 {
+    margin-top: 30px;
+}
+
+.mbottom-5 {
+    margin-bottom: 5px;
+}
+
+.mbottom-30 {
+    margin-bottom: 30px;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+}
+
+.font-1-3em {
+    font-size: 1.3em;
+}
